@@ -1,2 +1,3 @@
 .venv/
 pytorch/*
+lab/data/FashionMNIST/*
