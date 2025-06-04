@@ -1,3 +1,7 @@
 .venv/
 pytorch/*
 lab/data/FashionMNIST/*
+lab/data/*images*.tar.gz
+lab/data/imagenet/
+lab/__pycache__/
+lab/lightning_logs/
