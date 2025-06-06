@@ -6,12 +6,12 @@ import pytorch_lightning as L
 
 
 class MnistDataModule(L.LightningDataModule):
-    def __init__(self, data_dir: str = "./data", batch_size: int = 256, image_size: tuple[int, int] = (28, 28), num_worksers: int = 16):
+    def __init__(self, data_dir: str = "./data", batch_size: int = 256, image_size: tuple[int, int] = (28, 28), num_workers: int = 16):
         super().__init__()
 
         self.data_dir = data_dir
         self.batch_size = batch_size
-        self.num_workers = num_worksers
+        self.num_workers = num_workers
         self.trans = v2.Compose([v2.ToImage(), v2.ToDtype(
             torch.float32, True), v2.Resize(image_size)])
 
@@ -51,7 +51,7 @@ class ImagenetDatasetSize224(L.LightningDataModule):
         self.image_transforms = v2.Compose(
             [v2.ToImage(), v2.ToDtype(torch.float32, True), v2.Resize((224, 224))])
         self.batch_size = 32
-        self.num_worksers = 16
+        self.num_workers = 16
 
     def prepare_data(self):
         return super().prepare_data()
@@ -69,10 +69,10 @@ class ImagenetDatasetSize224(L.LightningDataModule):
         self.test_dataset = test_dataset
 
     def train_dataloader(self):
-        return data.DataLoader(self.train_dataset, self.batch_size, True, num_workers=self.num_worksers, persistent_workers=True)
+        return data.DataLoader(self.train_dataset, self.batch_size, True, num_workers=self.num_workers, persistent_workers=True)
 
     def val_dataloader(self):
-        return data.DataLoader(self.validation_dataset, self.batch_size, False, num_workers=self.num_worksers, persistent_workers=True)
+        return data.DataLoader(self.validation_dataset, self.batch_size, False, num_workers=self.num_workers, persistent_workers=True)
 
     def test_dataloader(self):
-        return data.DataLoader(self.test_dataset, self.batch_size, False, num_workers=self.num_worksers, persistent_workers=True)
+        return data.DataLoader(self.test_dataset, self.batch_size, False, num_workers=self.num_workers, persistent_workers=True)
