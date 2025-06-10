@@ -31,7 +31,7 @@ class MnistDataModule(L.LightningDataModule):
         self.val_ds = validation_dataset
 
         self.test_ds = torchvision.datasets.FashionMNIST(
-            root=self.data_dir,transform=self.trans, train=False, download=True)
+            root=self.data_dir, transform=self.trans, train=False, download=True)
 
     def train_dataloader(self):
         return data.DataLoader(self.train_ds, self.batch_size, True, num_workers=self.num_workers, persistent_workers=True)
@@ -44,14 +44,14 @@ class MnistDataModule(L.LightningDataModule):
 
 
 class ImagenetDatasetSize224(L.LightningDataModule):
-    def __init__(self):
+    def __init__(self, batch_size: int = 32, num_workers: int = 8):
         super().__init__()
         self.train_dataset_path = "./data/imagenet/training_images/"
         self.test_dataset_path = "./data/imagenet/validation_images/"
         self.image_transforms = v2.Compose(
             [v2.ToImage(), v2.ToDtype(torch.float32, True), v2.Resize((224, 224))])
-        self.batch_size = 32
-        self.num_workers = 16
+        self.batch_size = batch_size
+        self.num_workers = num_workers
 
     def prepare_data(self):
         return super().prepare_data()
