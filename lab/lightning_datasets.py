@@ -76,3 +76,49 @@ class ImagenetDatasetSize224(L.LightningDataModule):
 
     def test_dataloader(self):
         return data.DataLoader(self.test_dataset, self.batch_size, False, num_workers=self.num_workers, persistent_workers=True)
+
+
+class CIFAR10(L.LightningDataModule):
+    def __init__(self, data_dir: str = "./data", batch_size: int = 256, image_size: tuple[int, int] = (28, 28), image_augumentation: bool = True, num_workers: int = 16):
+        super().__init__()
+        self.data_dir = data_dir
+        self.batch_size = batch_size
+        self.num_workers = num_workers
+        if image_augumentation:
+            self.transform = v2.Compose([
+                v2.RandomHorizontalFlip(),
+                v2.ColorJitter(brightness=0.3),
+                v2.ToImage(),
+                v2.ToDtype(torch.float32, True),
+                v2.Resize(image_size)
+            ])
+        else:
+            self.transform = v2.Compose([
+                v2.ToImage(),
+                v2.ToDtype(torch.float32, True),
+                v2.Resize(image_size)
+            ])
+
+        self.val_transform = v2.Compose([
+            v2.ToImage(),
+            v2.ToDtype(torch.float32, True),
+            v2.Resize(image_size)
+        ])
+
+    def prepare_data(self):
+        torchvision.datasets.CIFAR10(
+            self.data_dir, True, self.transform, download=True)
+        torchvision.datasets.CIFAR10(
+            self.data_dir, False, self.transform, download=True)
+
+    def setup(self, stage):
+        self.train_dataset = torchvision.datasets.CIFAR10(
+            self.data_dir, True, self.transform, download=False)
+        self.validation_dataset = torchvision.datasets.CIFAR10(
+            self.data_dir, False, self.val_transform, download=False)
+
+    def train_dataloader(self):
+        return data.DataLoader(self.train_dataset, self.batch_size, True, num_workers=self.num_workers, persistent_workers=True)
+
+    def val_dataloader(self):
+        return data.DataLoader(self.validation_dataset, self.batch_size, False, num_workers=self.num_workers, persistent_workers=True)
