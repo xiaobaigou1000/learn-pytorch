@@ -87,7 +87,6 @@ class CIFAR10(L.LightningDataModule):
         if image_augumentation:
             self.transform = v2.Compose([
                 v2.RandomHorizontalFlip(),
-                v2.ColorJitter(brightness=0.3),
                 v2.ToImage(),
                 v2.ToDtype(torch.float32, True),
                 v2.Resize(image_size)
