@@ -8,7 +8,8 @@ from pytorch_lightning.callbacks import ModelCheckpoint
 def main():
     model = AlexNet(10)
     dataset = CIFAR10(batch_size=128, image_size=(224, 224))
-    logger = MLFlowLogger(run_name="AlexNet-CIFAR10")
+    logger = MLFlowLogger(
+        experiment_name="image_classification", run_name="AlexNet-CIFAR10")
     callbacks = [
         ModelCheckpoint("./saved_checkpoints/alexnet-cifar10/",
                         save_top_k=5, monitor="validation_loss", mode='min', every_n_epochs=1)
