@@ -4,6 +4,8 @@ lab/data/FashionMNIST/*
 lab/data/*images*.tar.gz
 lab/data/imagenet/
 lab/data/cifar-10-batches-py/
+lab/data/cifar-10-python.tar.gz
 lab/__pycache__/
 lab/lightning_logs/
 lab/mlruns/
+__pycache__/
