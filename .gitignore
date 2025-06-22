@@ -5,6 +5,9 @@ lab/data/*images*.tar.gz
 lab/data/imagenet/
 lab/data/cifar-10-batches-py/
 lab/data/cifar-10-python.tar.gz
+lab/data/banana-detection/
+lab/data/banana-detection.zip
+lab/saved_checkpoints/
 lab/__pycache__/
 lab/lightning_logs/
 lab/mlruns/

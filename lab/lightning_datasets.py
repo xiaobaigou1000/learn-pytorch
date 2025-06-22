@@ -3,6 +3,9 @@ import torchvision
 from torch.utils import data
 from torchvision.transforms import v2
 import pytorch_lightning as L
+import pandas
+import PIL.Image
+from pathlib import Path
 
 
 class MnistDataModule(L.LightningDataModule):
@@ -121,3 +124,52 @@ class CIFAR10(L.LightningDataModule):
 
     def val_dataloader(self):
         return data.DataLoader(self.validation_dataset, self.batch_size, False, num_workers=self.num_workers, persistent_workers=True)
+
+
+class BananaDetectionDataset(torch.utils.data.Dataset):
+    def __init__(self, data_dir: str, transform: v2.Transform = None):
+        super().__init__()
+        self.labels = pandas.read_csv(Path(data_dir) / Path('label.csv'))
+        self.image_root = Path(data_dir) / Path("images")
+        self.transform = transform
+
+    def __getitem__(self, index):
+        label = self.labels.loc[index]
+        image = PIL.Image.open(self.image_root / Path(label['img_name']))
+        if self.transform != None:
+            image = self.transform(image)
+        label = torch.tensor([0, label['xmin'] / 256, label['ymin'] /
+                             256, label['xmax'] / 256, label['ymax'] / 256]).reshape(1, 5)
+        return image, label
+
+    def __len__(self):
+        return len(self.labels)
+
+
+class BananaDetection(L.LightningDataModule):
+    def __init__(self, data_dir: str = "./data/banana-detection/", batch_size: int = 128, image_size: tuple[int, int] = (256, 256), num_workers: int = 16):
+        super().__init__()
+        self.data_dir = data_dir
+        self.batch_size = batch_size
+        self.image_size = image_size
+        self.num_workers = num_workers
+        self.transform = v2.Compose([
+            v2.ToImage(),
+            v2.ToDtype(torch.float32, True),
+            v2.Resize(self.image_size)
+        ])
+
+    def prepare_data(self):
+        return super().prepare_data()
+
+    def setup(self, stage):
+        self.train_dataset = BananaDetectionDataset(
+            Path(self.data_dir) / Path("bananas_train"), self.transform)
+        self.valiation_dataset = BananaDetectionDataset(
+            Path(self.data_dir) / Path("bananas_val"), self.transform)
+
+    def train_dataloader(self):
+        return data.DataLoader(self.train_dataset, self.batch_size, True, num_workers=self.num_workers)
+
+    def val_dataloader(self):
+        return data.DataLoader(self.valiation_dataset, self.batch_size, False, num_workers=self.num_workers)
