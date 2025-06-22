@@ -33,3 +33,63 @@
 > cd lab
 > uv run python -m mlflow server
 ```
+
+## Datasets
+
+`MNIST`及`CIFAR10`数据集为官方提供数据集，但是`ImageNet`和`banana-detection`等dataset需要额外下载。
+
+### ImageNet
+
+**该数据集下载和配置都较为繁琐，不推荐使用**
+
+ImageNet官方下载渠道需要非公开邮箱的验证，这里采用Hugging Face提供的坂本。[Hugging Face ImageNet](https://huggingface.co/datasets/ILSVRC/imagenet-1k)
+
+下载后，不推荐使用Hugging Face提供的`imagenet1k.py`文件读取，即使数据集完好，使用该方式读取仍然有无法读取的图片。
+
+推荐解压后，将图片按照分类存储成以下格式，使用Pytorch自带的`ImageFolder`进行读取。在`lab/lightning_datasets.py`中，是使用`ImageFolder`读取，并转换为Lightning Framework需要的LightningDataset示例。
+
+```
+.
+.
+└── lab
+    └── data
+        └── imagenet
+            ├── training_images
+            │   ├── n01440764
+            │   ├── n01443537
+            │   ├── ......
+            │   └── n15075141
+            └── validation_images
+                ├── n01440764
+                ├── n01443537
+                ├── ......
+                └── n15075141
+```
+
+### Banana Detection
+
+d2l教程中使用的简单目标检测数据集，因为不使用`d2l`库，需要额外下载，并解压至`lab/data`目录下。
+
+[Banana Detection数据集](https://d2l-data.s3-accelerate.amazonaws.com/banana-detection.zip)
+
+解压后目录如下：
+
+```
+└── lab
+    └── data
+        └── banana-detection
+            ├── bananas_train
+            │   ├── images
+            │   │   ├── 0.png
+            │   │   ├── 100.png
+            │   │   ├── ......
+            │   │   └── 9.png
+            │   └── label.csv
+            └── bananas_val
+                ├── images
+                │   ├── 0.png
+                │   ├── 10.png
+                │   ├── ......
+                │   └── 9.png
+                └── label.csv
+```
