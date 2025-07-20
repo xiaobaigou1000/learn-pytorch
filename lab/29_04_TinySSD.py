@@ -13,7 +13,7 @@ def main():
 
     callbacks = [
         ModelCheckpoint("./saved_checkpoints/tinyssd-bananadetection/",
-                        save_top_k=5, monitor="epoch", mode='max', every_n_epochs=1)
+                        save_top_k=5, monitor="validation_final_loss", mode='min', every_n_epochs=1)
     ]
     trainer = L.Trainer('gpu', logger=logger,
                         callbacks=callbacks, max_epochs=20, log_every_n_steps=1)
