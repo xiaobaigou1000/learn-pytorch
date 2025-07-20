@@ -169,7 +169,7 @@ class BananaDetection(L.LightningDataModule):
             Path(self.data_dir) / Path("bananas_val"), self.transform)
 
     def train_dataloader(self):
-        return data.DataLoader(self.train_dataset, self.batch_size, True, num_workers=self.num_workers)
+        return data.DataLoader(self.train_dataset, self.batch_size, True, num_workers=self.num_workers, persistent_workers=True)
 
     def val_dataloader(self):
-        return data.DataLoader(self.valiation_dataset, self.batch_size, False, num_workers=self.num_workers)
+        return data.DataLoader(self.valiation_dataset, self.batch_size, False, num_workers=self.num_workers, persistent_workers=True)
