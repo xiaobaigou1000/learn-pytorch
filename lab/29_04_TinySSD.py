@@ -12,7 +12,7 @@ def main():
         experiment_name="object_detection", run_name="TinySSD-BananaDetection")
 
     callbacks = [
-        ModelCheckpoint("./saved_checkpoints/vgg-cifar10/",
+        ModelCheckpoint("./saved_checkpoints/tinyssd-bananadetection/",
                         save_top_k=5, monitor="epoch", mode='max', every_n_epochs=1)
     ]
     trainer = L.Trainer('gpu', logger=logger,
