@@ -94,11 +94,11 @@ class TinySSD(L.LightningModule):
 
         final_loss = (class_loss + bbox_loss).mean()
 
-        class_error = float((cls_preds.argmax(dim=-1).type(
-            class_labels.dtype) == class_labels).sum())
+        class_error = 1 - float((cls_preds.argmax(dim=-1).type(
+            class_labels.dtype) == class_labels).sum()) / class_labels.numel()
 
         bbox_mae = float(
-            (torch.abs((bbox_labels - bbox_preds) * bbox_masks)).sum())
+            (torch.abs((bbox_labels - bbox_preds) * bbox_masks)).sum()) / bbox_labels.numel()
 
         return class_error, bbox_mae, final_loss
 
